@@ -39,9 +39,13 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+// this method handle the POST sent to /urls from the form
 app.post("/urls", (req, res) => {
   console.log(req.body);
   res.send("ok");
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  console.log(urlDatabase);
 });
 
 app.get("/urls/new", (req, res) => {
