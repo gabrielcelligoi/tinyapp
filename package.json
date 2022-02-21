@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/gabrielcelligoi/tinyapp/issues"
   },
-  "homepage": "https://github.com/gabrielcelligoi/tinyapp#readme"
+  "homepage": "https://github.com/gabrielcelligoi/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
 }
