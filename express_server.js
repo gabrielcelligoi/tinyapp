@@ -41,11 +41,11 @@ app.get("/urls", (req, res) => {
 
 // this method handle the POST sent to /urls from the form
 app.post("/urls", (req, res) => {
-  console.log(req.body);
-  res.send("ok");
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-  console.log(urlDatabase);
+  console.log(req.body);  
+  const randomShortURL = generateRandomString();
+  urlDatabase[randomShortURL] = req.body.longURL;
+  const templateVars = { shortURL: randomShortURL, longURL: urlDatabase[randomShortURL]};
+  res.render("urls_show", templateVars); 
 });
 
 app.get("/urls/new", (req, res) => {
