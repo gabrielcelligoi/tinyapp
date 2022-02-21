@@ -11,6 +11,17 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+//function to generate a shortURL with a string of 6 random alphanumeric characters
+function generateRandomString() {
+  const characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const charactersLength = characters.length;
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += characters[Math.floor(Math.random() * charactersLength)];
+  }
+  return result;
+};
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -26,6 +37,11 @@ app.get("/hello", (req, res) => {
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
+});
+
+app.post("/urls", (req, res) => {
+  console.log(req.body);
+  res.send("ok");
 });
 
 app.get("/urls/new", (req, res) => {
