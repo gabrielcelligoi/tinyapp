@@ -40,7 +40,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// this method handle the POST sent to /urls from the form
+// this method handle the POST sent to /urls from the form that request a new short URL
 app.post("/urls", (req, res) => {
   console.log("New short URL requested to: ", req.body);
   const randomShortURL = generateRandomString();
@@ -58,6 +58,11 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.post("/urls/:shortURL", (req, res) => {  
+  const shortURL = req.params.shortURL  
+  res.redirect(`/urls/${shortURL}`)
+});
+
 app.get("/u/:shortURL", (req, res) => {  
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
@@ -65,6 +70,13 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post("/urls/:shortURL/delete", (req, res) => {  
   delete urlDatabase[req.params.shortURL];  
+  res.redirect("/urls");
+});
+
+app.post("/urls/edit/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const newLongURL = req.body.longURL;
+  urlDatabase[shortURL] = newLongURL;
   res.redirect("/urls");
 });
 
