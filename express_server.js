@@ -26,13 +26,14 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-}); 
-
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
+
+
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+}); 
 
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
@@ -58,8 +59,13 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {  
-  const longURL = urlDatabase[req.params.shortURL]
+  const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
+});
+
+app.post("/urls/:shortURL/delete", (req, res) => {  
+  delete urlDatabase[req.params.shortURL];  
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
