@@ -30,7 +30,7 @@ function generateRandomString() {
 const checkEmail = function (email, object) {
   for (let user in object) {    
     if (email === object[user].email) {
-      return true;
+      return users[user];
     }
   }
   return false;
@@ -108,7 +108,7 @@ app.post("/register", (req, res) => {
 
   if (userEmail === "" || userPassword === "") {
     res.send("<h1>400</h1>");
-  } else if (checkEmail(userEmail, users) === true) {
+  } else if (checkEmail(userEmail, users)) {
     res.send("<h1>400</h1>");  
   } else {
     users[randomId] = { id: randomId, email: userEmail, password: userPassword };
@@ -128,8 +128,22 @@ app.get("/login", (req, res) => {
   res.render("login_view", templateVars);
 });
 
-app.post("/login", (req, res) => {  
-  res.redirect("/login");  
+app.post("/login", (req, res) => {
+  // console.log(req.body) -> { email: 'gabrielcelligoi@hotmail.com', password: 'fds' }
+  const loginEmail = req.body.email;
+  const loginPassword = req.body.password;  
+  if (checkEmail(loginEmail, users)) {
+    const userProfile = checkEmail(loginEmail, users);
+    if (loginPassword === userProfile.password) {
+      res.cookie("user_id", userProfile.id);
+      res.redirect("/urls");
+    }
+  }
+  res.send("<h1>403</h1>");
+});
+
+app.post("/login/r", (req, res) => {
+  res.redirect("/login");
 });
 
 app.post("/logout", (req, res) => {  
