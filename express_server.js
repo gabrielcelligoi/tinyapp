@@ -119,14 +119,21 @@ app.post("/register", (req, res) => {
   }
 });
 
-app.post("/login", (req, res) => {   
-  res.cookie("username", req.body.username);
-  res.redirect("/urls");  
-  const username = req.body.username;
+app.post("/register/r", (req, res) => {
+  res.redirect("/register");
+});
+
+app.get("/login", (req, res) => {
+  const templateVars = { user: users[req.cookies.user_id] };
+  res.render("login_view", templateVars);
+});
+
+app.post("/login", (req, res) => {  
+  res.redirect("/login");  
 });
 
 app.post("/logout", (req, res) => {  
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls")
 });
 
