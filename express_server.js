@@ -124,9 +124,13 @@ app.get("/u/:shortURL", (req, res) => {
   
 });
 
-app.post("/urls/:shortURL/delete", (req, res) => {  
-  delete urlDatabase[req.params.shortURL];  
-  res.redirect("/urls");
+app.post("/urls/:shortURL/delete", (req, res) => {
+  if (req.cookies.user_id) {
+    delete urlDatabase[req.params.shortURL];  
+    res.redirect("/urls");
+  } else {
+    res.send("<h1>Please, login or register.</h1>");
+  }
 });
 
 app.post("/urls/edit/:shortURL", (req, res) => {
@@ -189,7 +193,7 @@ app.post("/login/r", (req, res) => {
 
 app.post("/logout", (req, res) => {  
   res.clearCookie("user_id");
-  res.redirect("/urls")
+  res.redirect("/login")
 });
 
 app.listen(PORT, () => {
