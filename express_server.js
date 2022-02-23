@@ -65,7 +65,7 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  templateVars = { username: req.cookies.username };
+  const templateVars = { username: req.cookies.username };
   res.render("urls_new", templateVars);
 });
 
@@ -97,7 +97,8 @@ app.post("/urls/edit/:shortURL", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register_view");
+  const templateVars = { username: req.cookies.username };
+  res.render("register_view", templateVars);
 });
 
 app.post("/login", (req, res) => {
