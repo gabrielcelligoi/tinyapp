@@ -27,6 +27,15 @@ function generateRandomString() {
   return result;
 };
 
+const checkEmail = function (email, object) {
+  for (let user in object) {    
+    if (email === object[user].email) {
+      return true;
+    }
+  }
+  return false;
+};
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -39,10 +48,9 @@ app.get("/hello", (req, res) => {
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 }); 
+
 ///////////////
-app.get("/urls", (req, res) => {
-  
-  console.log(users[req.cookies.user_id]);  
+app.get("/urls", (req, res) => {  
   const templateVars = { user: users[req.cookies.user_id], urls: urlDatabase };
   res.render("urls_index", templateVars);  
 });
@@ -97,18 +105,23 @@ app.post("/register", (req, res) => {
   const randomId = generateRandomString();
   const userEmail = req.body.email;
   const userPassword = req.body.password;
-  users[randomId] = { id: randomId, email: userEmail, password: userPassword };
-  
-  res.cookie("user_id", randomId);  
 
-  res.redirect("/urls");
+  if (userEmail === "" || userPassword === "") {
+    res.send("<h1>400</h1>");
+  } else if (checkEmail(userEmail, users) === true) {
+    res.send("<h1>400</h1>");  
+  } else {
+    users[randomId] = { id: randomId, email: userEmail, password: userPassword };
+    
+    res.cookie("user_id", randomId);  
+
+    res.redirect("/urls");    
+  }
 });
 
 app.post("/login", (req, res) => {   
   res.cookie("username", req.body.username);
-  res.redirect("/urls");
-
-  
+  res.redirect("/urls");  
   const username = req.body.username;
 });
 
