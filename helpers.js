@@ -1,6 +1,4 @@
-
-//FUNCTIONS--------------------------------------------------
-function generateRandomString() {
+const generateRandomString = function() {
   const characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const charactersLength = characters.length;
   let result = "";
@@ -10,8 +8,8 @@ function generateRandomString() {
   return result;
 };
 
-const getUserByEmail = function (email, object) {
-  for (let user in object) {    
+const getUserByEmail = function(email, object) {
+  for (let user in object) {
     if (email === object[user].email) {
       return object[user];
     }
@@ -19,9 +17,9 @@ const getUserByEmail = function (email, object) {
   return false;
 };
 
-const urlsForUser = function(id, database) {
+const getUrlByUserId = function(id, database) {
   let result = {};
-  for (let element in database) {    
+  for (let element in database) {
     if (id === database[element].userID) {
       result[element] = database[element];
     }
@@ -29,4 +27,4 @@ const urlsForUser = function(id, database) {
   return result;
 };
 
-module.exports = { generateRandomString, getUserByEmail, urlsForUser };
+module.exports = { generateRandomString, getUserByEmail, getUrlByUserId };
