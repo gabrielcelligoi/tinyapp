@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 // const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const cookieSession = require("cookie-session");
+const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -29,38 +30,6 @@ const urlDatabase = {
 const users = {};
 
 
-
-//FUNCTIONS--------------------------------------------------
-function generateRandomString() {
-  const characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const charactersLength = characters.length;
-  let result = "";
-  for (let i = 0; i < 6; i++) {
-    result += characters[Math.floor(Math.random() * charactersLength)];
-  }
-  return result;
-};
-
-const checkEmail = function (email, object) {
-  for (let user in object) {    
-    if (email === object[user].email) {
-      return users[user];
-    }
-  }
-  return false;
-};
-
-const urlsForUser = function(id) {
-  let result = {};
-  for (let element in urlDatabase) {    
-    if (id === urlDatabase[element].userID) {
-      result[element] = urlDatabase[element];
-    }
-  }
-  return result;
-};
-
-
 //ROUTS----------------------------------------------------
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -78,7 +47,7 @@ app.get("/urls.json", (req, res) => {
 ///////////////
 app.get("/urls", (req, res) => {
   if (req.session.user_id) {
-    const usersUrls = urlsForUser(req.session.user_id);
+    const usersUrls = urlsForUser(req.session.user_id, urlDatabase);
     const templateVars = { user: users[req.session.user_id], urls: usersUrls };
     res.render("urls_index", templateVars);  
   } else {
@@ -106,7 +75,7 @@ app.post("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const usersUrls = urlsForUser(req.session.user_id);
+  const usersUrls = urlsForUser(req.session.user_id, urlDatabase);
 
   if (req.session.user_id && Object.keys(usersUrls).length) {
     const templateVars = { user: users[req.session.user_id], shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
@@ -162,7 +131,7 @@ app.post("/register", (req, res) => {
 
   if (userEmail === "" || userPassword === "") {
     res.send("<h1>400</h1>");
-  } else if (checkEmail(userEmail, users)) {
+  } else if (getUserByEmail(userEmail, users)) {
     res.send("<h1>400</h1>");  
   } else {
     users[randomId] = { id: randomId, email: userEmail, password: userHashedPassword };
@@ -186,8 +155,8 @@ app.post("/login", (req, res) => {
   const loginEmail = req.body.email;
   const loginPassword = req.body.password;
   
-  if (checkEmail(loginEmail, users)) {
-    const userProfile = checkEmail(loginEmail, users);
+  if (getUserByEmail(loginEmail, users)) {
+    const userProfile = getUserByEmail(loginEmail, users);
     if (bcrypt.compareSync(loginPassword, userProfile.password)) {      
       req.session.user_id = userProfile.id;
       return res.redirect("/urls");      
